@@ -11,15 +11,6 @@ var httpauth = require('http-auth');
 var crossroads = require('crossroads');
 crossroads.ignoreState = true;
 
-var basic = httpauth.basic(
-    {
-        realm: "Fennel"
-    }, function (username, password, callback)
-    {
-        authlib.checkLogin(basic, username, password, callback);
-    }
-);
-
 crossroads.addRoute('/p/:params*:', (comm, params) => {
     comm.params = params;
 
@@ -95,24 +86,26 @@ crossroads.bypassed.add((comm, path) =>  {
     res.end();
 });
 
+var basic = httpauth.basic({
+    realm: "Fennel"
+}, (username, password, callback) => {
+    authlib.checkLogin(basic, username, password, callback);
+}
+);
+
 // start the server and process requests
-var server = http.createServer(basic, function (req, res)
-{
+var server = http.createServer(basic, (req, res) => {
     log.debug("======================== Method: " + req.method + ", URL: " + req.url);
     log.debug("================ Header: ", JSON.stringify(req.headers, null, 2));
 
     // will contain the whole body submitted
 	var reqBody = "";
-
-    req.on('data', function (data)
-    {
+    req.on('data', (data) => {
         reqBody += data.toString();
     });
 
-    req.on('end',function()
-    {
+    req.on('end', () =>  {
         var comm = new communication(req, res, reqBody);
-
         var sUrl = url.parse(req.url).pathname;
         log.debug("Request body: " + reqBody);
         crossroads.parse(sUrl, [comm]);
@@ -121,14 +114,12 @@ var server = http.createServer(basic, function (req, res)
 
 server.listen(config.port);
 
-server.on('error', function (e)
-{
+server.on('error', (e) => {
     log.warn('Caught error: ' + e.message);
     log.debug(e.stack);
 });
 
-process.on('uncaughtException', function(err)
-{
+process.on('uncaughtException', (err) =>  {
     log.warn('Caught exception: ' + err.message);
     log.debug(err.stack);
 });

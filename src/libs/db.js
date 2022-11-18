@@ -1,13 +1,3 @@
-/*-----------------------------------------------------------------------------
- **
- ** - Fennel Card-/CalDAV -
- **
- ** Copyright 2014-16 by
- ** SwordLord - the coding crew - http://www.swordlord.com
- ** and contributing authors
- **
- -----------------------------------------------------------------------------*/
-
 var log = require('./log').log;
 var config = require('../../config').config;
 
@@ -116,18 +106,9 @@ var PERMISSION = sequelize.define('PERMISSION', {
     permission: { type: Sequelize.TEXT, allowNull: false}
 });
 
-
-function _getPermission(user)
-{
-    // get groups from user
-    // get permissions from groups
-}
-
-sequelize.sync().then(function()
-    {
+sequelize.sync().then(() => {
         log.info("Database structure updated");
-    }).catch(function(error)
-    {
+    }).catch(function(error) {
         log.error("Database structure update crashed: " + error);
     }
 );
@@ -138,8 +119,5 @@ module.exports = {
     CAL: CAL,
     VCARD: VCARD,
     ADB: ADDRESSBOOK,
-    getPermission: function (user) {
-        return _getPermission(user);
-    },
     sequelize: sequelize
 };
