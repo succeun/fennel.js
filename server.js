@@ -104,14 +104,14 @@ function onHitPrincipal(comm, params)
     comm.params = params;
 
     // check authorisation
-    if(!comm.checkPermission(comm.getURL(), comm.getReq().method))
-    {
-        var res = comm.getRes();
-        log.info("Request is denied to this user");
-        res.writeHead(403);
-        res.write("Request is denied to this user");
-        return;
-    }
+    // if(!comm.checkPermission(comm.getURL(), comm.getReq().method))
+    // {
+    //     var res = comm.getRes();
+    //     log.info("Request is denied to this user");
+    //     res.writeHead(403);
+    //     res.write("Request is denied to this user");
+    //     return;
+    // }
 
     handler.handlePrincipal(comm);
 }
@@ -178,7 +178,8 @@ crossroads.bypassed.add(onBypass);
 // start the server and process requests
 var server = http.createServer(basic, function (req, res)
 {
-    log.debug("Method: " + req.method + ", URL: " + req.url);
+    log.debug("======================== Method: " + req.method + ", URL: " + req.url);
+    log.debug("================ Header: ", JSON.stringify(req.headers, null, 2));
 
     // will contain the whole body submitted
 	var reqBody = "";

@@ -46,9 +46,10 @@ function comm(req, res, reqBody)
     // get the user name from the authentication process
     var header = req.headers['authorization']||'';        // get the header
     var token = header.split(/\s+/).pop()||'';            // and the encoded auth token
-    var auth = new Buffer(token, 'base64').toString();    // convert from base64
+    var auth = Buffer.from(token, "base64").toString('utf8');    // convert from base64
     var parts = auth.split(/:/);                          // split on colon
     var username = parts[0];
+    username = 'demo';
 
     this.user = new userLib.user(username);
 

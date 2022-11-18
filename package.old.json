@@ -29,23 +29,23 @@
   },
   "dependencies": {
     "crossroads": ">=0.12.2",
-    "htdigest": ">=2.2.8",
-    "htpasswd": ">=2.4.6",
-    "http-auth": ">=4.2.0",
+    "htdigest": ">=2.0.2",
+    "htpasswd": ">=2.1.2",
+    "http-auth": ">=2.1.9",
     "libxmljs": "^0.19.10",
-    "log4js": ">=6.7.0",
-    "moment": ">=2.29.4",
+    "log4js": ">=0.6.9",
+    "moment": ">=2.15.1",
     "node-regexp": ">=0.1.1",
     "pretty-data": ">=0.40.0",
-    "sequelize": ">=6.25.6",
-    "shiro-trie": ">=0.4.10",
+    "sequelize": ">=3.30.4",
+    "shiro-trie": ">=0.3.12",
     "sqlite3": "^5.1.2",
-    "uuid": ">=9.0.0",
-    "xml2js": ">=0.4.23"
+    "uuid": ">=2.0.3",
+    "xml2js": ">=0.4.9"
   },
   "devDependencies": {
-    "faucet": "0.0.3",
+    "faucet": "0.0.1",
     "request": "^2.65.0",
-    "tape": "^5.6.1"
+    "tape": "^4.0.1"
   }
 }

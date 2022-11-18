@@ -26,7 +26,7 @@ function propfind(comm)
 
     comm.setStandardHeaders();
     comm.setDAVHeaders();
-    comm.setResponseCode(207);
+    //comm.setResponseCode(207);
 
     comm.appendResBody(xh.getXMLHead());
 
@@ -77,6 +77,9 @@ function propfind(comm)
 
             case 'current-user-principal':
                 response += "<d:current-user-principal><d:href>/p/" + comm.getUser().getUserName() + "/</d:href></d:current-user-principal>";
+                // todo: 미인증일때
+                //response += "<d:unauthenticated></d:unauthenticated>";
+                //comm.setHeader("WWW-Authenticate", 'Basic realm="Password Required"');
                 break;
 
             case 'calendar-home-set':
@@ -129,7 +132,8 @@ function propfind(comm)
     comm.appendResBody("</d:propstat>");
     comm.appendResBody("</d:response>");
     comm.appendResBody("</d:multistatus>");
-
+    
+    comm.setResponseCode(207);
     comm.flushResponse();
 }
 

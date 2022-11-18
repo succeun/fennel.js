@@ -104,7 +104,7 @@ function propfind(comm)
 
         // check out if we already have a record for the default addressbook
         // if not, lets create it, otherwise let's return its values...
-        ADB.find({ where: {ownerId: username, name: adbName} }).then(function(adb)
+        ADB.findOne({ where: {ownerId: username, name: adbName} }).then(function(adb)
         {
             VCARD.findAndCountAll(
                 { where: {addressbookId: adb.pkey}}
@@ -371,7 +371,7 @@ function del(comm)
     {
         var addressbookId = comm.getPathElement(3);
 
-        ADB.find({ where: {pkey: addressbookId} }).then(function(adb)
+        ADB.findOne({ where: {pkey: addressbookId} }).then(function(adb)
         {
             if(adb === null)
             {
@@ -392,7 +392,7 @@ function del(comm)
     {
         var vcardId = comm.getFilenameFromPath(true);
 
-        VCARD.find( { where: {pkey: vcardId}}).then(function(vcard)
+        VCARD.findOne( { where: {pkey: vcardId}}).then(function(vcard)
         {
             if(vcard === null)
             {
@@ -419,7 +419,7 @@ function gett(comm)
     res.setHeader("Content-Type", "text/vcard; charset=utf-8");
 
     var vcardId = comm.getFilenameFromPath(true);
-    VCARD.find({ where: {pkey: vcardId} }).then(function(vcard)
+    VCARD.findOne({ where: {pkey: vcardId} }).then(function(vcard)
     {
         if(vcard === null)
         {
@@ -459,7 +459,7 @@ function put(comm)
 
     // check out if we already have a record for the default addressbook
     // if not, lets create it, otherwise let's return its values...
-    ADB.find({ where: {ownerId: username, name: adbName} }).then(function(adb)
+    ADB.findOne({ where: {ownerId: username, name: adbName} }).then(function(adb)
     {
         var defaults = {
             addressbookId: adb.pkey,
@@ -489,7 +489,7 @@ function put(comm)
 
                     // update addressbook collection
                     /*
-                    ADB.find({ where: {pkey: addressbookId} } ).then(function(cal)
+                    ADB.findOne({ where: {pkey: addressbookId} } ).then(function(cal)
                     {
                         if(cal !== null && cal !== undefined)
                         {
@@ -540,7 +540,7 @@ function move(comm)
         var aURL = destination.split("/");
         var newCal = aURL[aURL.length - 2];
 
-        ICS.find({ where: {pkey: ics_id} }).then(function(ics)
+        ICS.findOne({ where: {pkey: ics_id} }).then(function(ics)
         {
             if(ics === null)
             {
@@ -774,7 +774,7 @@ function proppatch(comm)
     if(isRoot)
     {
         var calendarId = comm.getLastPathElement(false);
-        CAL.find({ where: {pkey: calendarId} }).then(function(cal)
+        CAL.findOne({ where: {pkey: calendarId} }).then(function(cal)
         {
             if(cal === null)
             {

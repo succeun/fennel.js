@@ -55,7 +55,7 @@ function del(comm)
     {
         var calendarId = comm.getPathElement(3);
 
-        CAL.find({ where: {pkey: calendarId} }).then(function(cal)
+        CAL.findOne({ where: {pkey: calendarId} }).then(function(cal)
         {
             if(cal === null)
             {
@@ -76,7 +76,7 @@ function del(comm)
     {
         var ics_id = comm.getFilenameFromPath(true);
 
-        ICS.find( { where: {pkey: ics_id}}).then(function(ics)
+        ICS.findOne( { where: {pkey: ics_id}}).then(function(ics)
         {
             if(ics === null)
             {
@@ -103,7 +103,7 @@ function gett(comm)
     comm.setHeader("Content-Type", "text/calendar");
 
     var ics_id = comm.getFilenameFromPath(true);
-    ICS.find( { where: {pkey: ics_id}}).then(function(ics)
+    ICS.findOne( { where: {pkey: ics_id}}).then(function(ics)
     {
         if(ics === null)
         {
@@ -128,6 +128,12 @@ function put(comm)
     var ics_id = comm.getFilenameFromPath(true);
     var calendar = comm.getCalIdFromURL();
 
+    if (!ics_id) {
+        // todo: 맞는지 모르겠음
+        comm.setResponseCode(201);
+        comm.flushResponse();
+    }
+
     var body = comm.getReqBody();
 
     //console.log(body);
@@ -146,7 +152,7 @@ function put(comm)
         content: body
     };
 
-    ICS.findOrCreate({ where: {pkey: ics_id}, defaults: defaults}).spread(function(ics, created)
+    ICS.findOrCreate({ where: {pkey: ics_id}, defaults: defaults}).then(function([ics, created])
     {
         if(created)
         {
@@ -240,7 +246,7 @@ function move(comm)
         var aURL = destination.split("/");
         var newCal = aURL[aURL.length - 2];
 
-        ICS.find({ where: {pkey: ics_id} }).then(function(ics)
+        ICS.findOne({ where: {pkey: ics_id} }).then(function(ics)
         {
             if(ics === null)
             {
@@ -416,7 +422,7 @@ function handlePropfindForCalendarNotifications(comm)
 
 function handlePropfindForCalendarId(comm, calendarId)
 {
-    CAL.find({ where: {pkey: calendarId} }).then(function(cal)
+    CAL.findOne({ where: {pkey: calendarId} }).then(function(cal)
     {
         comm.setStandardHeaders();
         comm.setDAVHeaders();
@@ -1102,7 +1108,7 @@ function handleReportCalendarQuery(comm, xmlDoc)
         }
     }
 
-    CAL.find({ where: {pkey: calendarId} } ).then(function(cal)
+    CAL.findOne({ where: {pkey: calendarId} } ).then(function(cal)
     {
         // TODO: filter according to calendar-query.comp-filter
         ICS.findAndCountAll( { where: filter}
@@ -1214,7 +1220,7 @@ function handleReportSyncCollection(comm)
     {
         var calendarId = comm.getPathElement(3);
 
-        CAL.find({ where: {pkey: calendarId} } ).then(function(cal)
+        CAL.findOne({ where: {pkey: calendarId} } ).then(function(cal)
         {
             ICS.findAndCountAll(
                 { where: {calendarId: calendarId}}
@@ -1432,7 +1438,7 @@ function proppatch(comm)
     if(isRoot)
     {
         var calendarId = comm.getCalIdFromURL();
-        CAL.find({ where: {pkey: calendarId} }).then(function(cal)
+        CAL.findOne({ where: {pkey: calendarId} }).then(function(cal)
         {
             if(cal === null)
             {

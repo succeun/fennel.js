@@ -38,7 +38,7 @@ var config =
     // Server specific configuration
     // Please use a proxy in front of Fennel to support TLS.
     // We suggest you use nginx as the TLS endpoint
-    port: 8888,
+    port: 8000,
     //port: 80,
     ip: '127.0.0.1',
     //ip: '0.0.0.0',
