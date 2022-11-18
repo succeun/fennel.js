@@ -90,7 +90,6 @@ var config =
     test_user_pwd: 'demo'
 };
 
-// Exporting.
 module.exports = {
     config: config
 };

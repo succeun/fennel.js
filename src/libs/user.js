@@ -1,4 +1,3 @@
-// Exporting.
 module.exports = {
     user: user,
 };

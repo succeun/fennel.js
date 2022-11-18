@@ -56,7 +56,6 @@ function handleCard(request) {
     }
 }
 
-// Exporting.
 module.exports = {
     handlePrincipal: handlePrincipal,
     handleCalendar: handleCalendar,

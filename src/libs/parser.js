@@ -68,7 +68,6 @@ function parseICS(file) {
     return JSON.parse(result);
 }
 
-// Exporting.
 module.exports = {
     parseICS: parseICS,
 };

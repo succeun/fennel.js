@@ -131,7 +131,6 @@ function checkLDAP(username, password, callback) {
     });
 }
 
-// Exporting.
 module.exports = {
     checkLogin: checkLogin,
 };

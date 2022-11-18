@@ -20,7 +20,7 @@ var sequelize = new Sequelize(config.db_name, config.db_uid, config.db_pwd, {
  * represents an event object with a start and an end date
  */
 var ICS = sequelize.define('ICS', {
-    pkey: { type: Sequelize.STRING, allowNull: false, unique: true, primaryKey: true},
+    pkey: { comment: 'Primary Key', type: Sequelize.STRING, allowNull: false, unique: true, primaryKey: true},
     calendarId: { type: Sequelize.STRING, allowNull: false},
     startDate: { type: Sequelize.DATE, allowNull: false},
     endDate: { type: Sequelize.DATE, allowNull: false},
@@ -33,7 +33,7 @@ var ICS = sequelize.define('ICS', {
  * represents a calendar object containing events (ics)
  */
 var CAL = sequelize.define('CAL', {
-    pkey: { type: Sequelize.STRING, allowNull: false, unique: true, primaryKey: true},
+    pkey: { comment: 'Primary Key', type: Sequelize.STRING, allowNull: false, unique: true, primaryKey: true},
     owner: { type: Sequelize.STRING, allowNull: false},
     timezone: { type: Sequelize.TEXT, allowNull: false},
     order: { type: Sequelize.STRING, allowNull: false},
@@ -50,7 +50,7 @@ var CAL = sequelize.define('CAL', {
  * represents an address (vcard) object
  */
 var VCARD = sequelize.define('VCARD', {
-    pkey: { type: Sequelize.STRING, allowNull: false, unique: true, primaryKey: true},
+    pkey: { comment: 'Primary Key', type: Sequelize.STRING, allowNull: false, unique: true, primaryKey: true},
     ownerId: { type: Sequelize.STRING, allowNull: false},
     addressbookId: { type: Sequelize.STRING, allowNull: false},
     content: { type: Sequelize.TEXT, allowNull: false},
@@ -63,7 +63,7 @@ var VCARD = sequelize.define('VCARD', {
  * represents an addressbook containing addresses (vcard)
  */
 var ADDRESSBOOK = sequelize.define('ADB', {
-    pkey: { type: Sequelize.STRING, allowNull: false, unique: true, primaryKey: true},
+    pkey: { comment: 'Primary Key', type: Sequelize.STRING, allowNull: false, unique: true, primaryKey: true},
     ownerId: { type: Sequelize.STRING, allowNull: false},
     name: { type: Sequelize.STRING, allowNull: false},
     synctoken: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0}
@@ -74,11 +74,11 @@ var ADDRESSBOOK = sequelize.define('ADB', {
  * @type {Model}
  * users are grouped into usergroup. this is the binding table between users -n--n- groups
  */
-var USER_GROUP = sequelize.define('USER_GROUP', {
-    userId: { type: Sequelize.STRING, allowNull: false, unique: false, primaryKey: true},
-    groupId: { type: Sequelize.STRING, allowNull: false, unique: false, primaryKey: true},
-    description: { type: Sequelize.TEXT, allowNull: true}
-});
+// var USER_GROUP = sequelize.define('USER_GROUP', {
+//     userId: { type: Sequelize.STRING, allowNull: false, unique: false, primaryKey: true},
+//     groupId: { type: Sequelize.STRING, allowNull: false, unique: false, primaryKey: true},
+//     description: { type: Sequelize.TEXT, allowNull: true}
+// });
 
 /**
  *
@@ -86,10 +86,10 @@ var USER_GROUP = sequelize.define('USER_GROUP', {
  * a group of users which can have specific authorisation rules and permissions.
  * a group is somewhat a role in RBAC.
  */
-var GROUP = sequelize.define('GROUP', {
-    groupId: { type: Sequelize.STRING, allowNull: false, unique: false, primaryKey: true},
-    description: { type: Sequelize.TEXT, allowNull: true}
-});
+// var GROUP = sequelize.define('GROUP', {
+//     groupId: { type: Sequelize.STRING, allowNull: false, unique: false, primaryKey: true},
+//     description: { type: Sequelize.TEXT, allowNull: true}
+// });
 
 /**
  *
@@ -100,11 +100,11 @@ var GROUP = sequelize.define('GROUP', {
  *
  * Users need to have respective permission to execute specific action
  */
-var PERMISSION = sequelize.define('PERMISSION', {
-    permissionId: { type: Sequelize.STRING, allowNull: false, unique: true, primaryKey: true},
-    groupId: { type: Sequelize.STRING, allowNull: false},
-    permission: { type: Sequelize.TEXT, allowNull: false}
-});
+// var PERMISSION = sequelize.define('PERMISSION', {
+//     permissionId: { type: Sequelize.STRING, allowNull: false, unique: true, primaryKey: true},
+//     groupId: { type: Sequelize.STRING, allowNull: false},
+//     permission: { type: Sequelize.TEXT, allowNull: false}
+// });
 
 sequelize.sync().then(() => {
         log.info("Database structure updated");
@@ -113,7 +113,6 @@ sequelize.sync().then(() => {
     }
 );
 
-// Exporting.
 module.exports = {
     ICS: ICS,
     CAL: CAL,

@@ -9,7 +9,6 @@ var pd = require("pretty-data").pd;
 // shiro-trie object for authorisation checks
 var st = require("shiro-trie");
 
-// Exporting.
 /**
  *
  * @type {comm}

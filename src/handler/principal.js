@@ -1,27 +1,15 @@
-/*-----------------------------------------------------------------------------
- **
- ** - Fennel Card-/CalDAV -
- **
- ** Copyright 2014-17 by
- ** SwordLord - the coding crew - http://www.swordlord.com
- ** and contributing authors
- **
- -----------------------------------------------------------------------------*/
-
 var xml = require("libxmljs");
 var xh = require("../libs/xmlhelper");
-var log = require('../libs/log').log;
+var log = require("../libs/log").log;
 
-// Exporting.
 module.exports = {
     propfind: propfind,
     proppatch: proppatch,
     report: report,
-    options: options
+    options: options,
 };
 
-function propfind(comm)
-{
+function propfind(comm) {
     log.debug("principal.propfind called");
 
     comm.setStandardHeaders();
@@ -33,96 +21,94 @@ function propfind(comm)
     var body = comm.getReqBody();
     var xmlDoc = xml.parseXml(body);
 
-    var node = xmlDoc.get('/A:propfind/A:prop', {
-        A: 'DAV:',
+    var node = xmlDoc.get("/A:propfind/A:prop", {
+        A: "DAV:",
         B: "urn:ietf:params:xml:ns:caldav",
-        C: 'http://calendarserver.org/ns/',
+        C: "http://calendarserver.org/ns/",
         D: "http://apple.com/ns/ical/",
-        E: "http://me.com/_namespace/"
+        E: "http://me.com/_namespace/",
     });
     var childs = node.childNodes();
 
     var response = "";
 
     var len = childs.length;
-    for (var i=0; i < len; ++i)
-    {
+    for (var i = 0; i < len; ++i) {
         var child = childs[i];
         var name = child.name();
-        switch(name)
-        {
-            case 'checksum-versions':
+        switch (name) {
+            case "checksum-versions":
                 response += "";
                 break;
 
-            case 'sync-token':
+            case "sync-token":
                 response += "<d:sync-token>http://sabredav.org/ns/sync/5</d:sync-token>";
                 break;
 
-            case 'supported-report-set':
+            case "supported-report-set":
                 response += getSupportedReportSet(comm);
                 break;
 
-            case 'principal-URL':
+            case "principal-URL":
                 response += "<d:principal-URL><d:href>/p/" + comm.getUser().getUserName() + "/</d:href></d:principal-URL>\r\n";
                 break;
 
-            case 'displayname':
+            case "displayname":
                 response += "<d:displayname>" + comm.getUser().getUserName() + "</d:displayname>";
                 break;
 
-            case 'principal-collection-set':
+            case "principal-collection-set":
                 response += "<d:principal-collection-set><d:href>/p/</d:href></d:principal-collection-set>";
                 break;
 
-            case 'current-user-principal':
+            case "current-user-principal":
                 response += "<d:current-user-principal><d:href>/p/" + comm.getUser().getUserName() + "/</d:href></d:current-user-principal>";
                 // todo: 미인증일때
                 //response += "<d:unauthenticated></d:unauthenticated>";
                 //comm.setHeader("WWW-Authenticate", 'Basic realm="Password Required"');
                 break;
 
-            case 'calendar-home-set':
+            case "calendar-home-set":
                 response += "<cal:calendar-home-set><d:href>/cal/" + comm.getUser().getUserName() + "</d:href></cal:calendar-home-set>";
                 break;
 
-            case 'schedule-outbox-URL':
+            case "schedule-outbox-URL":
                 response += "<cal:schedule-outbox-URL><d:href>/cal/" + comm.getUser().getUserName() + "/outbox</d:href></cal:schedule-outbox-URL>";
                 break;
 
-            case 'calendar-user-address-set':
+            case "calendar-user-address-set":
                 response += getCalendarUserAddressSet(comm);
                 break;
 
-            case 'notification-URL':
+            case "notification-URL":
                 response += "<cs:notification-URL><d:href>/cal/" + comm.getUser().getUserName() + "/notifications/</d:href></cs:notification-URL>";
                 break;
 
-            case 'getcontenttype':
+            case "getcontenttype":
                 response += "";
                 break;
 
-            case 'addressbook-home-set':
+            case "addressbook-home-set":
                 response += "<card:addressbook-home-set><d:href>/card/" + comm.getUser().getUserName() + "/</d:href></card:addressbook-home-set>";
                 break;
 
-            case 'directory-gateway':
+            case "directory-gateway":
                 response += "";
                 break;
-            case 'email-address-set':
+            case "email-address-set":
                 response += "<cs:email-address-set><cs:email-address>lord test at swordlord.com</cs:email-address></cs:email-address-set>";
                 break;
-            case 'resource-id':
+            case "resource-id":
                 response += "";
                 break;
 
             default:
-                if(name != 'text') log.warn("P-PF: not handled: " + name);
+                if (name != "text") log.warn("P-PF: not handled: " + name);
                 break;
         }
     }
 
-    comm.appendResBody("<d:multistatus xmlns:d=\"DAV:\" xmlns:cal=\"urn:ietf:params:xml:ns:caldav\" xmlns:cs=\"http://calendarserver.org/ns/\" xmlns:card=\"urn:ietf:params:xml:ns:carddav\">");
+    comm.appendResBody('<d:multistatus xmlns:d="DAV:" xmlns:cal="urn:ietf:params:xml:ns:caldav" xmlns:cs="http://calendarserver.org/ns/" xmlns:card="urn:ietf:params:xml:ns:carddav">');
     comm.appendResBody("<d:response><d:href>" + comm.getURL() + "</d:href>");
     comm.appendResBody("<d:propstat>");
     comm.appendResBody("<d:prop>");
@@ -132,13 +118,12 @@ function propfind(comm)
     comm.appendResBody("</d:propstat>");
     comm.appendResBody("</d:response>");
     comm.appendResBody("</d:multistatus>");
-    
+
     comm.setResponseCode(207);
     comm.flushResponse();
 }
 
-function getCalendarUserAddressSet(comm)
-{
+function getCalendarUserAddressSet(comm) {
     var response = "";
 
     response += "        <cal:calendar-user-address-set>\r\n";
@@ -149,8 +134,7 @@ function getCalendarUserAddressSet(comm)
     return response;
 }
 
-function getSupportedReportSet(comm)
-{
+function getSupportedReportSet(comm) {
     var response = "";
     response += "        <d:supported-report-set>\r\n";
     response += "        	<d:supported-report>\r\n";
@@ -173,22 +157,19 @@ function getSupportedReportSet(comm)
     return response;
 }
 
-function options(comm)
-{
+function options(comm) {
     log.debug("principal.options called");
 
     comm.pushOptionsResponse();
 }
 
-function report(comm)
-{
+function report(comm) {
     log.debug("principal.report called");
 
     comm.setStandardHeaders();
 
     var body = comm.getReqBody();
-    if(!body)
-    {
+    if (!body) {
         log.warn("principal.report called with no body");
 
         comm.setResponseCode(500);
@@ -202,57 +183,52 @@ function report(comm)
 
     var xmlDoc = xml.parseXml(body);
 
-    var node = xmlDoc.get('/A:propfind/A:prop', {
-        A: 'DAV:',
+    var node = xmlDoc.get("/A:propfind/A:prop", {
+        A: "DAV:",
         B: "urn:ietf:params:xml:ns:caldav",
-        C: 'http://calendarserver.org/ns/',
+        C: "http://calendarserver.org/ns/",
         D: "http://apple.com/ns/ical/",
-        E: "http://me.com/_namespace/"
+        E: "http://me.com/_namespace/",
     });
 
     var response = "";
 
-    if(node != undefined)
-    {
+    if (node != undefined) {
         var childs = node.childNodes();
 
         var len = childs.length;
-        for (var i=0; i < len; ++i)
-        {
+        for (var i = 0; i < len; ++i) {
             var child = childs[i];
             var name = child.name();
-            switch(name)
-            {
-                case 'principal-search-property-set':
+            switch (name) {
+                case "principal-search-property-set":
                     response += getPrincipalSearchPropertySet(comm);
                     break;
 
                 default:
-                    if(name != 'text') log.warn("P-R: not handled: " + name);
+                    if (name != "text") log.warn("P-R: not handled: " + name);
                     break;
             }
         }
     }
 
-    node = xmlDoc.get('/A:principal-search-property-set', {
-        A: 'DAV:',
+    node = xmlDoc.get("/A:principal-search-property-set", {
+        A: "DAV:",
         B: "urn:ietf:params:xml:ns:caldav",
-        C: 'http://calendarserver.org/ns/',
+        C: "http://calendarserver.org/ns/",
         D: "http://apple.com/ns/ical/",
-        E: "http://me.com/_namespace/"
+        E: "http://me.com/_namespace/",
     });
 
-    if(node != undefined)
-    {
+    if (node != undefined) {
         var name = node.name();
-        switch(name)
-        {
-            case 'principal-search-property-set':
+        switch (name) {
+            case "principal-search-property-set":
                 response += getPrincipalSearchPropertySet(comm);
                 break;
 
             default:
-                if(name != 'text') log.warn("P-R: not handled: " + name);
+                if (name != "text") log.warn("P-R: not handled: " + name);
                 break;
         }
     }
@@ -260,51 +236,45 @@ function report(comm)
     // TODO: clean up
     comm.appendResBody(response);
 
-    if(isReportPropertyCalendarProxyWriteFor(comm))
-    {
+    if (isReportPropertyCalendarProxyWriteFor(comm)) {
         replyPropertyCalendarProxyWriteFor(comm);
     }
 
     comm.flushResponse();
 }
 
-
-function getPrincipalSearchPropertySet(comm)
-{
+function getPrincipalSearchPropertySet(comm) {
     var response = "";
-    response += "<d:principal-search-property-set xmlns:d=\"DAV:\" xmlns:cal=\"urn:ietf:params:xml:ns:caldav\" xmlns:cs=\"http://calendarserver.org/ns/\" xmlns:card=\"urn:ietf:params:xml:ns:carddav\">\r\n";
+    response += '<d:principal-search-property-set xmlns:d="DAV:" xmlns:cal="urn:ietf:params:xml:ns:caldav" xmlns:cs="http://calendarserver.org/ns/" xmlns:card="urn:ietf:params:xml:ns:carddav">\r\n';
     response += "  <d:principal-search-property>\r\n";
     response += "    <d:prop>\r\n";
     response += "      <d:displayname/>\r\n";
     response += "    </d:prop>\r\n";
-    response += "    <d:description xml:lang=\"en\">Display name</d:description>\r\n";
+    response += '    <d:description xml:lang="en">Display name</d:description>\r\n';
     response += "  </d:principal-search-property>\r\n";
-//    response += "  <d:principal-search-property>\r\n";
-//    response += "    <d:prop>\r\n";
-//    response += "      <s:email-address/>\r\n";
-//    response += "    </d:prop>\r\n";
-//    response += "    <d:description xml:lang=\"en\">Email address</d:description>\r\n";
-//    response += "  </d:principal-search-property>\r\n";
+    //    response += "  <d:principal-search-property>\r\n";
+    //    response += "    <d:prop>\r\n";
+    //    response += "      <s:email-address/>\r\n";
+    //    response += "    </d:prop>\r\n";
+    //    response += "    <d:description xml:lang=\"en\">Email address</d:description>\r\n";
+    //    response += "  </d:principal-search-property>\r\n";
     response += "</d:principal-search-property-set>\r\n";
 
     return response;
 }
 
-
-function isReportPropertyCalendarProxyWriteFor(comm)
-{
+function isReportPropertyCalendarProxyWriteFor(comm) {
     var body = comm.getReqBody();
     var xmlDoc = xml.parseXml(body);
 
-    var node = xmlDoc.get('/A:expand-property/A:property[@name=\'calendar-proxy-write-for\']', { A: 'DAV:', C: 'http://calendarserver.org/ns/'});
+    var node = xmlDoc.get("/A:expand-property/A:property[@name='calendar-proxy-write-for']", { A: "DAV:", C: "http://calendarserver.org/ns/" });
 
-    return typeof node != 'undefined';
+    return typeof node != "undefined";
 }
 
-function replyPropertyCalendarProxyWriteFor(comm)
-{
+function replyPropertyCalendarProxyWriteFor(comm) {
     var url = comm.getURL();
-    comm.appendResBody("<d:multistatus xmlns:d=\"DAV:\" xmlns:cal=\"urn:ietf:params:xml:ns:caldav\" xmlns:cs=\"http://calendarserver.org/ns/\" xmlns:card=\"urn:ietf:params:xml:ns:carddav\">\r\n");
+    comm.appendResBody('<d:multistatus xmlns:d="DAV:" xmlns:cal="urn:ietf:params:xml:ns:caldav" xmlns:cs="http://calendarserver.org/ns/" xmlns:card="urn:ietf:params:xml:ns:carddav">\r\n');
     comm.appendResBody("<d:response>");
     comm.appendResBody("    <d:href>" + url + "</d:href>");
     comm.appendResBody("    <d:propstat>");
@@ -318,8 +288,7 @@ function replyPropertyCalendarProxyWriteFor(comm)
     comm.appendResBody("</d:multistatus>\r\n");
 }
 
-function proppatch(comm)
-{
+function proppatch(comm) {
     log.debug("principal.proppatch called");
 
     comm.setStandardHeaders(comm);
@@ -327,8 +296,8 @@ function proppatch(comm)
     var url = comm.getURL();
     comm.setResponseCode(200);
 
-    comm.appendResBody("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-    comm.appendResBody("<d:multistatus xmlns:d=\"DAV:\" xmlns:cal=\"urn:ietf:params:xml:ns:caldav\" xmlns:cs=\"http://calendarserver.org/ns/\" xmlns:card=\"urn:ietf:params:xml:ns:carddav\">\r\n");
+    comm.appendResBody('<?xml version="1.0" encoding="utf-8"?>');
+    comm.appendResBody('<d:multistatus xmlns:d="DAV:" xmlns:cal="urn:ietf:params:xml:ns:caldav" xmlns:cs="http://calendarserver.org/ns/" xmlns:card="urn:ietf:params:xml:ns:carddav">\r\n');
     comm.appendResBody("	<d:response>\r\n");
     comm.appendResBody("		<d:href>" + url + "</d:href>\r\n");
     comm.appendResBody("		<d:propstat>\r\n");
@@ -342,4 +311,3 @@ function proppatch(comm)
 
     comm.flushResponse();
 }
-
