@@ -1,38 +1,27 @@
-/*-----------------------------------------------------------------------------
- **
- ** - Fennel Card-/CalDAV -
- **
- ** Copyright 2014-16 by
- ** SwordLord - the coding crew - http://www.swordlord.com
- ** and contributing authors
- **
- -----------------------------------------------------------------------------*/
-var log4js = require('log4js');
+var log4js = require("log4js");
 var log = log4js.getLogger("requesthandler");
 
 var principal = require("../handler/principal");
 var cal = require("../handler/calendar");
 var card = require("../handler/addressbook");
 
-function handlePrincipal(request)
-{
+function handlePrincipal(request) {
     // check if root url or cal or card url
     var method = request.getReq().method;
-    switch(method)
-    {
-        case 'PROPFIND':
+    switch (method) {
+        case "PROPFIND": 
             principal.propfind(request);
             break;
 
-        case 'PROPPATCH':
+        case "PROPPATCH":
             principal.proppatch(request);
             break;
 
-        case 'OPTIONS':
+        case "OPTIONS":
             principal.options(request);
             break;
 
-        case 'REPORT':
+        case "REPORT":
             principal.report(request);
             break;
 
@@ -45,44 +34,42 @@ function handlePrincipal(request)
     }
 }
 
-function handleCalendar(request)
-{
+function handleCalendar(request) {
     var method = request.getReq().method;
-    switch(method)
-    {
-        case 'PROPFIND':
+    switch (method) {
+        case "PROPFIND":
             cal.propfind(request);
             break;
 
-        case 'PROPPATCH':
+        case "PROPPATCH":
             cal.proppatch(request);
             break;
 
-        case 'OPTIONS':
+        case "OPTIONS":
             cal.options(request);
             break;
 
-        case 'REPORT':
+        case "REPORT":
             cal.report(request);
             break;
 
-        case 'MKCALENDAR':
+        case "MKCALENDAR":
             cal.makeCalendar(request);
             break;
 
-        case 'PUT':
+        case "PUT":
             cal.put(request);
             break;
 
-        case 'GET':
+        case "GET":
             cal.get(request);
             break;
 
-        case 'DELETE':
+        case "DELETE":
             cal.delete(request);
             break;
 
-        case 'MOVE':
+        case "MOVE":
             cal.move(request);
             break;
 
@@ -95,40 +82,38 @@ function handleCalendar(request)
     }
 }
 
-function handleCard(request)
-{
+function handleCard(request) {
     var method = request.getReq().method;
-    switch(method)
-    {
-        case 'PROPFIND':
+    switch (method) {
+        case "PROPFIND":
             card.propfind(request);
             break;
 
-        case 'PROPPATCH':
+        case "PROPPATCH":
             card.proppatch(request);
             break;
 
-        case 'OPTIONS':
+        case "OPTIONS":
             card.options(request);
             break;
 
-        case 'REPORT':
+        case "REPORT":
             card.report(request);
             break;
 
-        case 'PUT':
+        case "PUT":
             card.put(request);
             break;
 
-        case 'GET':
+        case "GET":
             card.get(request);
             break;
 
-        case 'DELETE':
+        case "DELETE":
             card.delete(request);
             break;
 
-        case 'MOVE':
+        case "MOVE":
             card.move(request);
             break;
 
@@ -145,5 +130,5 @@ function handleCard(request)
 module.exports = {
     handlePrincipal: handlePrincipal,
     handleCalendar: handleCalendar,
-    handleCard: handleCard
+    handleCard: handleCard,
 };

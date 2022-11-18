@@ -8,8 +8,8 @@
  **
  -----------------------------------------------------------------------------*/
 
-var log = require('../libs/log').log;
-var config = require('../config').config;
+var log = require('./log').log;
+var config = require('../../config').config;
 
 var Sequelize = require('sequelize');
 

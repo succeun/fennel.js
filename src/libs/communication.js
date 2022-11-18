@@ -8,10 +8,10 @@
  **
  -----------------------------------------------------------------------------*/
 
-var log = require('../libs/log').log;
-var config = require('../config').config;
+var log = require('./log').log;
+var config = require('../../config').config;
 
-var userLib = require('../libs/user');
+var userLib = require('./user');
 var url = require('url');
 
 var pd = require('pretty-data').pd;
