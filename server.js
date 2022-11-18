@@ -4,6 +4,7 @@ var http = require('http');
 var url = require('url');
 var log = require('./src/libs/log').log;
 var handler = require('./src/libs/requesthandler');
+var xh = require("./src/libs/xmlhelper");
 
 var communication = require('./src/libs/communication');
 var httpauth = require('http-auth');
@@ -11,12 +12,30 @@ var httpauth = require('http-auth');
 var crossroads = require('crossroads');
 crossroads.ignoreState = true;
 
+var session = null;
+
+function unauthorizedLogin(comm) {
+    var res = comm.getRes();
+    comm.setHeader("WWW-Authenticate", 'Basic realm="Kakaowork"');
+    res.writeHead(401);
+    comm.appendResBody(`<?xml version="1.0" encoding="utf-8"?>
+    <d:error xmlns:d="DAV:" xmlns:s="http://sabredav.org/ns">
+      <s:exception>Sabre\DAV\Exception\NotAuthenticated</s:exception>
+      <s:message>Username or password was incorrect</s:message>
+    </d:error>`);
+    comm.flushResponse();
+}
+
 crossroads.addRoute('/p/:params*:', (comm, params) => {
+    if (!session) {
+        unauthorizedLogin(comm);
+        return;
+    }
+
     comm.params = params;
 
     // check authorisation
-    // if(!comm.checkPermission(comm.getURL(), comm.getReq().method))
-    // {
+    // if(!comm.checkPermission(comm.getURL(), comm.getReq().method)) {
     //     var res = comm.getRes();
     //     log.info("Request is denied to this user");
     //     res.writeHead(403);
@@ -28,23 +47,32 @@ crossroads.addRoute('/p/:params*:', (comm, params) => {
 });
 
 crossroads.addRoute('/cal/:username:/:cal:/:params*:', (comm, username, cal, params) => {
+    if (!session) {
+        unauthorizedLogin(comm);
+        return;
+    }
+
     comm.username = username;
     comm.cal = cal;
     comm.params = params;
 
     // check authorisation
-    if(!comm.checkPermission(comm.getURL(), comm.getReq().method))
-    {
-        var res = comm.getRes();
-        log.info("Request is denied to this user");
-        res.writeHead(403);
-        res.write("Request is denied to this user");
-        return;
-    }
+    // if(!comm.checkPermission(comm.getURL(), comm.getReq().method)) {
+    //     var res = comm.getRes();
+    //     log.info("Request is denied to this user");
+    //     res.writeHead(403);
+    //     res.write("Request is denied to this user");
+    //     return;
+    // }
     handler.handleCalendar(comm);
 });
 
 crossroads.addRoute('/card/:username:/:card:/:params*:', (comm, username, card, params) => {
+    if (!session) {
+        unauthorizedLogin(comm);
+        return;
+    }
+    
     comm.username = username;
     comm.card = card;
     comm.params = params;
@@ -87,10 +115,10 @@ crossroads.bypassed.add((comm, path) =>  {
 });
 
 var basic = httpauth.basic({
-    realm: "Fennel"
-}, (username, password, callback) => {
-    authlib.checkLogin(basic, username, password, callback);
-}
+        realm: "Kakaowork"
+    }, (username, password, callback) => {
+        authlib.checkLogin(basic, username, password, callback);
+    }
 );
 
 // start the server and process requests
@@ -105,7 +133,12 @@ var server = http.createServer(basic, (req, res) => {
     });
 
     req.on('end', () =>  {
-        var comm = new communication(req, res, reqBody);
+        var comm = new communication(req, res, reqBody, session);
+
+        if (comm.user) {
+            session = comm.user;
+        }
+
         var sUrl = url.parse(req.url).pathname;
         log.debug("Request body: " + reqBody);
         crossroads.parse(sUrl, [comm]);

@@ -127,7 +127,7 @@ function getCalendarUserAddressSet(comm) {
     var response = "";
 
     response += "        <cal:calendar-user-address-set>\r\n";
-    response += "        	<d:href>mailto:lord test at swordlord.com</d:href>\r\n";
+    response += "        	<d:href>mailto:luca.eun@kakaoenterprise.com</d:href>\r\n";
     response += "        	<d:href>/p/" + comm.getUser().getUserName() + "/</d:href>\r\n";
     response += "        </cal:calendar-user-address-set>\r\n";
 

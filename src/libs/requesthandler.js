@@ -21,8 +21,10 @@ function handlePrincipal(request) {
         case "PROPPATCH": principal.proppatch(request); break;
         case "OPTIONS": principal.options(request); break;
         case "REPORT": principal.report(request); break;
+        //case "HEAD": principal.head(request); break;
         default: notYet(request); break;
     }
+    log.info("--------------------------- handlePrincipal");
 }
 
 function handleCalendar(request) {
@@ -39,6 +41,7 @@ function handleCalendar(request) {
         case "MOVE": cal.move(request); break;
         default: notYet(request); break;
     }
+    log.info("--------------------------- handleCalendar");
 }
 
 function handleCard(request) {
@@ -54,6 +57,7 @@ function handleCard(request) {
         case "MOVE": card.move(request); break;
         default: notYet(request); break;
     }
+    log.info("--------------------------- handleCard");
 }
 
 module.exports = {

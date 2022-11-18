@@ -19,6 +19,9 @@ function checkLogin(basicAuth, username, password, callback) {
         case "ldap":
             checkLDAP(username, password, callback);
             break;
+        case "test":
+            return callback(true);
+            break;
 
         default:
             log.info("No authentication method defined. Denying access.");

@@ -59,7 +59,7 @@ function propfind(comm) {
 
         // check out if we already have a record for the default addressbook
         // if not, lets create it, otherwise let's return its values...
-        ADB.findOrCreate({ where: { ownerId: username, name: defaults.name }, defaults: defaults }).spread(function (adb, created) {
+        ADB.findOrCreate({ where: { ownerId: username, name: defaults.name }, defaults: defaults }).then(function ([adb, created]) {
             VCARD.findAndCountAll({ where: { addressbookId: adb.pkey } }).then(function (rsVCARDS) {
                 response += returnPropfindProps(comm, childs, adb, rsVCARDS);
 
@@ -409,7 +409,7 @@ function put(comm) {
 
         // check out if we already have a record for the default addressbook
         // if not, lets create it, otherwise let's return its values...
-        VCARD.findOrCreate({ where: { pkey: vcardId }, defaults: defaults }).spread(function (vcard, created) {
+        VCARD.findOrCreate({ where: { pkey: vcardId }, defaults: defaults }).then(function ([vcard, created]) {
             if (created) {
                 log.debug("Created VCARD: " + JSON.stringify(vcard, null, 4));
             } else {

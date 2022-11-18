@@ -889,7 +889,7 @@ function makeCalendar(comm) {
             displayname: displayname,
         };
 
-        CAL.findOrCreate({ where: { pkey: filename }, defaults: defaults }).spread(function (cal, created) {
+        CAL.findOrCreate({ where: { pkey: filename }, defaults: defaults }).then(function ([cal, created]) {
             if (created) {
                 log.debug("Created CAL: " + JSON.stringify(cal, null, 4));
             } else {
